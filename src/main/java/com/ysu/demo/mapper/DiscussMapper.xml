@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ysu.demo.mapper.DiscussMapper">
+    <resultMap type="com.ysu.demo.bean.Discuss" id="discussMapper">
+        <id property="discussId" column="ds_id" />
+        <result property="discussContent" column="ds_content" />
+        <result property="discussTime" column="ds_time" />
+
+        <association  fetchType="eager" property="shop" javaType="Shop">
+            <id property="shopId" column="s_id" />
+            <result property="shopName" column="s_name" />
+            <result property="masterName" column="m_name" />
+            <result property="shopIntroduction" column="s_introduction" />
+            <result property="contactNumber" column="c_number"/>
+            <result property="shopState" column="s_state"/>
+            <result property="roleId" column="r_Id"/>
+            <result property="userId" column="u_Id"/>
+            <result property="sale" column="s_sale"/>
+            <result property="shopImage" column="s_image"/>
+            <result property="score" column="s_score"/>
+        </association>
+        <association fetchType="eager" property="wxUser" javaType="WxUser">
+            <id property="wxId" column="wx_id" />
+            <result property="openId" column="open_id" />
+            <result property="phoneNumber" column="phone" />
+            <result property="userName" column="u_name" />
+        </association>
+        <association fetchType="eager" property="dishes" javaType="Dishes">
+            <id property="dishesId" column="d_id" />
+            <result property="dishesName" column="d_name" />
+            <result property="dishesSellNumber" column="d_sell_number" />
+            <result property="dishesIntroduction" column="d_introduction" />
+            <result property="dishesState" column="d_state"/>
+            <result property="dishesPrice" column="d_price"/>
+            <result property="shopId" column="s_id"/>
+            <result property="shopName" column="s_name"/>
+            <result property="count" column="d_count"/>
+            <result property="goodsId" column="g_id"/>
+            <result property="dishesImage" column="d_image"/>
+        </association>
+    </resultMap>
+
+
+    <!-- 菜品添加 -->
+    <insert id="insertDiscuss" parameterType="com.ysu.demo.bean.Discuss" useGeneratedKeys="true" keyProperty="discussId">
+		insert into discuss(ds_content,s_id,u_id,d_id,ds_time)
+		values(#{discussContent},#{shop.shopId},#{wxUser.userId},#{dishes.dishesId},#{discussTime})
+	</insert>
+
+<!--    &lt;!&ndash;    菜品删除&ndash;&gt;-->
+<!--    <delete id="deleteDiscuss" parameterType="Integer" >-->
+<!--	  delete from discuss where ds_id=#{value}-->
+<!--	</delete>-->
+
+<!--    &lt;!&ndash;    查询所有菜品&ndash;&gt;-->
+<!--    <select id="queryAllDiscuss" resultMap="discussMapper"   resultType="com.ysu.demo.bean.Discuss">-->
+<!--		select * from discuss-->
+<!--	</select>-->
+
+<!--    &lt;!&ndash;    以序号查询菜品&ndash;&gt;-->
+<!--    <select id="queryDiscussById"  resultMap="discussMapper" parameterType="Integer">-->
+<!--		select * from discuss where ds_id=#{discussId}-->
+<!--	</select>-->
+
+<!--    &lt;!&ndash;    以序号查询菜品&ndash;&gt;-->
+<!--    <select id="queryDiscussByDishesId"  resultMap="discussMapper" parameterType="Integer">-->
+<!--		select * from discuss where d_id=#{dishesId}-->
+<!--	</select>-->
+
+<!--    <update id="updateDiscuss" parameterType="com.ysu.demo.bean.Discuss">-->
+<!--	update discuss set ds_content=#{discussContent},s_id=#{shopId},d_id=#{dishesId},d_name=#{dishesName},s_name=#{shopName},ds_time=#{discussTime}where ds_Id=#{value}-->
+<!--	</update>-->
+
+<!--    &lt;!&ndash;    以序号查询菜品&ndash;&gt;-->
+<!--    <select id="queryDiscussByDishesName"  resultMap="discussMapper"  resultType="com.ysu.demo.bean.Discuss">-->
+<!--		select * from discuss where d_name like '%${value}%'-->
+<!--	</select>-->
+
+
+</mapper>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ysu.demo.mapper.CarMapper">
+    <resultMap type="com.ysu.demo.bean.Car" id="carMapper">
+        <id property="carId" column="c_id" />
+        <result property="dishesNumber" column="d_number" />
+        <result property="dishesId" column="d_id" />
+        <result property="dishesName" column="d_name" />
+        <result property="dishesPrice" column="d_price" />
+        <result property="dishesImage" column="d_image" />
+    </resultMap>
+
+    <!-- 菜品添加 -->
+    <insert id="insertCar" parameterType="com.ysu.demo.bean.Car" useGeneratedKeys="true" keyProperty="carId">
+		insert into car(d_number,d_id,d_name,d_price,d_image)
+		values(#{dishesNumber},#{dishesId},#{dishesName},#{dishesPrice},#{dishesImage})
+	</insert>
+    <!--    关系保存-->
+    <insert id="saveOCRelation">
+       insert into ocrelation (o_id,c_id) values (#{orderId},#{carId})
+    </insert>
+
+    <!--    菜品删除-->
+    <delete id="deleteCar" parameterType="Integer" >
+	  delete from car where c_id=#{value}
+	</delete>
+
+    <!--    查询所有菜品-->
+    <select id="queryAllCar" resultMap="carMapper"   resultType="com.ysu.demo.bean.Car">
+		select * from car
+	</select>
+
+    <!--    以序号查询菜品-->
+    <select id="queryCarById"  resultMap="carMapper" parameterType="Integer">
+		select * from car where c_id=#{carId}
+	</select>
+
+    <select id="queryCarByOrderId"  resultMap="carMapper">
+      select c.c_id,c.d_number,c.d_name,c.d_price,c.d_id,c.d_image from car c join ocrelation sc on c.c_id=sc.c_id where sc.o_id=#{values}
+    </select>
+
+
+</mapper>

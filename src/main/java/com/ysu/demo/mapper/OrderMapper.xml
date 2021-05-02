@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ysu.demo.mapper.OrderMapper">
+    <resultMap type="com.ysu.demo.bean.Order" id="orderMapper">
+        <id property="orderId" column="o_id" />
+        <result property="orderTime" column="o_time" />
+        <result property="phoneNumber" column="o_phone" />
+        <result property="userTrueName" column="u_true_name" />
+        <result property="shopId" column="s_id" />
+        <result property="shopName" column="s_name" />
+        <result property="orderState" column="o_state" />
+        <result property="orderPrice" column="o_price" />
+        <result property="dishesName" column="d_name" />
+        <result property="dishesCount" column="d_count" />
+        <result property="orderExtra" column="o_extra" />
+        <result property="qcTime" column="o_qctime" />
+        <result property="orderNumber" column="o_number"/>
+        <result property="shopImage" column="s_image"/>
+        <result property="userId" column="u_id"/>
+        <collection property="cars" fetchType="eager" column="o_id" ofType="com.ysu.demo.bean.Car"
+                    select="com.ysu.demo.mapper.CarMapper.queryCarByOrderId"/>
+    </resultMap>
+
+    <!-- 菜品添加 -->
+    <insert id="insertOrder" parameterType="com.ysu.demo.bean.Order" useGeneratedKeys="true" keyProperty="orderId">
+		insert into orders(o_time,o_phone,u_true_name,s_id,s_name,o_state,o_price,d_name,d_count,o_extra,o_qctime,s_image,u_id)
+		values(#{orderTime},#{phoneNumber},#{userTrueName},#{shopId},#{shopName},#{orderState},#{orderPrice},#{dishesName},#{dishesCount},#{orderExtra},#{qcTime},#{shopImage},#{userId})
+	</insert>
+    <!--    关系保存-->
+    <insert id="saveOCRelation">
+       insert into ocrelation (o_id,c_id) values (#{orderId},#{carId})
+    </insert>
+    <!--    菜品删除-->
+    <delete id="deleteOrder" parameterType="Integer" >
+	  delete from orders where o_id=#{value}
+	</delete>
+    <!--   订单取消-->
+    <update id="cancelOrder" parameterType="Integer">
+        update orders set o_state=5 where o_id=#{value }
+    </update>
+    <!--   订单状态变换-->
+    <update id="updateOrderState" parameterType="Integer">
+        update orders set o_state=#{orderState} where o_id=#{orderId}
+    </update>
+    <!--    查询所有菜品-->
+    <select id="queryAllOrder" resultMap="orderMapper" resultType="com.ysu.demo.bean.Order">
+		select * from orders
+	</select>
+    <!--    以订单号+店铺id查询菜品-->
+    <select id="queryShopOrder" resultMap="orderMapper" resultType="com.ysu.demo.bean.Order">
+     select * from orders where o_number=#{orderNumber} and s_id=#{shopId}
+	</select>
+    <!--    以序号查询菜品-->
+    <select id="queryOrderById" resultMap="orderMapper" parameterType="Integer">
+     select * from orders where o_id=#{orderId}
+	</select>
+    <!--    以店铺名查询菜品-->
+    <select id="queryOrderByShopName" resultMap="orderMapper" resultType="com.ysu.demo.bean.Order">
+     select * from orders where s_name like '%${value}%'
+	</select>
+    <!--以用户openid查询订单-->
+    <select id="queryOrderByOpenId" resultMap="orderMapper" resultType="com.ysu.demo.bean.Order">
+     select * from orders where u_id=#{value} order by o_state
+	</select>
+     <!--接单用-->
+    <select id="queryOrderByShopId2" resultMap="orderMapper" resultType="com.ysu.demo.bean.Order">
+     select * from orders where s_id=#{shopId} and o_state=1
+	</select>
+    <!--取餐用-->
+    <select id="queryOrderByShopId3" resultMap="orderMapper" resultType="com.ysu.demo.bean.Order">
+     select * from orders where s_id=#{shopId} and o_state=2 or o_state=3
+	</select>
+
+    <!--完成订单用-->
+    <select id="queryOrderByShopId4" resultMap="orderMapper" resultType="com.ysu.demo.bean.Order">
+     select * from orders where s_id=#{shopId} and o_state=4 or o_state=5
+	</select>
+
+</mapper>

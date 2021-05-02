@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ysu.demo.mapper.ShopMapper">
+    <!-- 复杂化查询 -->
+    <resultMap type="com.ysu.demo.bean.Shop" id="shopMapper">
+        <id property="shopId" column="s_id" />
+        <result property="shopName" column="s_name" />
+        <result property="masterName" column="m_name" />
+        <result property="shopIntroduction" column="s_introduction" />
+        <result property="contactNumber" column="c_number"/>
+        <result property="shopState" column="s_state"/>
+        <result property="roleId" column="r_Id"/>
+        <result property="userId" column="u_Id"/>
+        <result property="sale" column="s_sale"/>
+        <result property="shopImage" column="s_image"/>
+        <result property="score" column="s_score"/>
+    </resultMap>
+
+    <!-- 店家添加 -->
+    <insert id="insertShop" parameterType="com.ysu.demo.bean.Shop" useGeneratedKeys="true" keyProperty="shopId">
+		insert into shop(s_name,s_introduction,m_name,c_number,s_image,s_sale,s_score,u_id)
+		values(#{shopName},#{shopIntroduction},#{masterName},#{contactNumber},#{shopImage},#{sale},#{score},#{userId})
+	</insert>
+    <!-- 店家删除-->
+    <delete id="deleteShop" parameterType="Integer">
+	  delete from shop where s_Id=#{value}
+	</delete>
+    <!-- 更改店家-->
+    <update id="updateShop" parameterType="com.ysu.demo.bean.Shop" >
+	update shop set s_name=#{shopName},s_introduction=#{shopIntroduction},s_state=#{shopState},m_name=#{masterName} ,c_number=#{contactNumber} where s_id=#{shopId}
+	</update>
+    <!--    查询所有店家-->
+    <select id="queryAllShop" resultMap="shopMapper"   resultType="com.ysu.demo.bean.Shop">
+		select * from shop
+	</select>
+    <!--    以序号查询店家-->
+    <select id="queryShopById"  resultMap="shopMapper" parameterType="Integer">
+		select * from shop where s_id=#{shopId}
+	</select>
+    <!--  店家名查询（模糊查询）-->
+    <select id="queryShopByName"  resultMap="shopMapper" parameterType="java.lang.String">
+		select * from shop where s_name like '%${value}%'
+	</select>
+
+
+    <select id="shopIsExist"  resultMap="shopMapper" parameterType="com.ysu.demo.bean.Shop">
+		select * from shop where s_name=#{shopName}
+	</select>
+
+    <select id="shopSales"  resultMap="shopMapper"  resultType="com.ysu.demo.bean.Shop">
+		select s_name,s_sale from shop
+	</select>
+
+</mapper>

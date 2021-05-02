@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ysu.demo.mapper.GoodsMapper">
+    <resultMap type="com.ysu.demo.bean.Goods" id="goodsMapper">
+        <id property="goodsId" column="g_id" />
+        <result property="shopId" column="s_id" />
+        <result property="goodsName" column="g_name" />
+        <collection property="dishesList" fetchType="eager" column="g_id" ofType="com.ysu.demo.bean.Dishes"
+                            select="com.ysu.demo.mapper.DishesMapper.queryDishesByGoodsId"/>
+</resultMap>
+
+    <!-- 菜品添加 -->
+    <insert id="insertGoods" parameterType="com.ysu.demo.bean.Goods" useGeneratedKeys="true" keyProperty="goodsId">
+		insert into goods(s_id,g_name) values (#{shopId},#{goodsName})
+	</insert>
+
+    <!--    菜品删除-->
+    <delete id="deleteGoods" parameterType="Integer" >
+	  delete from goods where g_id=#{value}
+	</delete>
+
+    <!--    查询所有菜品-->
+    <select id="queryAllGoods" resultMap="goodsMapper"   resultType="com.ysu.demo.bean.Goods">
+		select * from goods
+	</select>
+
+    <!--    以序号查询菜品-->
+    <select id="queryGoodsById"  resultMap="goodsMapper" parameterType="Integer">
+		select * from goods where g_id=#{goodsId}
+	</select>
+
+    <!--    以序号查询菜品-->
+    <select id="queryGoodsByShopId"  resultMap="goodsMapper" parameterType="Integer">
+		select * from goods where s_id=#{shopId}
+	</select>
+
+</mapper>

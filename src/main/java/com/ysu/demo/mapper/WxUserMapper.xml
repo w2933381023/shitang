@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ysu.demo.mapper.WxUserMapper">
+    <!-- 复杂化查询 -->
+    <resultMap type="com.ysu.demo.bean.WxUser" id="wxUserMapper">
+        <id property="wxId" column="wx_id" />
+        <result property="openId" column="open_id" />
+        <result property="phoneNumber" column="phone" />
+        <result property="userName" column="u_name" />
+    </resultMap>
+
+    <!-- 注册 -->
+    <insert id="insertWxUser" parameterType="com.ysu.demo.bean.WxUser" useGeneratedKeys="true" keyProperty="wxId">
+		insert into wxuser(open_id,phone,u_name)
+		values(#{openId},#{phoneNumber},#{userName})
+	</insert>
+    <!--删除用户-->
+    <delete id="deleteWxUser" parameterType="int">
+	  delete from wxuser where wx_Id=#{value}
+	</delete>
+    <!--更改用户-->
+    <update id="updateWxUser" parameterType="com.ysu.demo.bean.WxUser">
+	update wxuser set phone=#{phoneNumber},u_name=#{userName} where open_id=#{openId}
+	</update>
+    <!--查询所有用户-->
+    <select id="queryAllWxUser" resultMap="wxUserMapper"   resultType="com.ysu.demo.bean.WxUser">
+		select * from WxUser
+	</select>
+    <!--以序号查询用户-->
+    <select id="queryWxUserByOpenId"  resultMap="wxUserMapper" parameterType="java.lang.String">
+		select * from wxuser where open_id=#{value}
+	</select>
+    <!-- 用户真实名查询（模糊查询）-->
+    <select id="queryWxUserByName"  resultMap="wxUserMapper" parameterType="java.lang.String">
+		select * from WxUser where u_true_name like '%${value}%'
+	</select>
+    <!--登录判定-->
+    <select id="wxUserIsExist"  resultMap="wxUserMapper" parameterType="com.ysu.demo.bean.WxUser">
+		select * from wxuser where open_id=#{value}
+	</select>
+    <!--账户信息变更-->
+    <update id="WxUserSafe" parameterType="com.ysu.demo.bean.WxUser">
+	update WxUser set password=#{password},u_true_name=#{WxUserTrueName},u_phone_number=#{phoneNumber}where u_Id=#{WxUserId}
+	</update>
+
+</mapper>

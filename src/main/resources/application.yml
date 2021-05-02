@@ -1,0 +1,37 @@
+server:
+  port: 8080
+#  port: 443
+#  ssl:
+#    key-store: classpath:5150073_ysuexpress.top.pfx
+#    key-store-password: 83fKy2wz
+#    key-store-type: PKCS12
+  session:
+    timeout: 7200
+  compression:
+    enabled: true
+    mime-types: application/javascript,text/css,application/json,application/xml,text/html,text/xml,text/plain, application/pdf
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/shitang?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=GMT%2b8
+    username: root
+    password: 1241815641
+    #  password: 1241815641
+  resources:
+    static-locations: classpath:/templates
+  mvc:
+    view:
+      prefix: /
+      suffix: .jsp
+  main:
+    allow-bean-definition-overriding: true
+  jackson:
+    time-zone: GMT+8
+  servlet:
+    multipart:
+      enabled: true
+pagehelper:
+  helper-dialect: mysql
+  params: count=countSql
+  reasonable: true
+  support-methods-arguments: true

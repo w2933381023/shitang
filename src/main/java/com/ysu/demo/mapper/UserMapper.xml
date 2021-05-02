@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ysu.demo.mapper.UserMapper">
+    <!-- 复杂化查询 -->
+    <resultMap type="com.ysu.demo.bean.User" id="userMapper">
+        <id property="userId" column="u_id" />
+        <result property="userName" column="u_name" />
+        <result property="password" column="password" />
+        <result property="userTrueName" column="u_true_name" />
+        <result property="phoneNumber" column="u_phone_number"/>
+        <result property="roleId" column="r_id"/>
+    </resultMap>
+
+    <!-- 后勤人员注册 -->
+    <insert id="insertUser" parameterType="com.ysu.demo.bean.User" useGeneratedKeys="true" keyProperty="userId">
+		insert into user(u_name,password,u_true_name,u_phone_number,r_id)
+		values(#{userName},#{password},#{userTrueName},#{phoneNumber},#{roleId})
+	</insert>
+     <!--删除用户-->
+    <delete id="deleteUser" parameterType="int">
+	  delete from user where u_Id=#{value}
+	</delete>
+    <!--更改用户-->
+    <update id="updateUser" parameterType="com.ysu.demo.bean.User">
+	update user set userName=#{userName},password=#{password},userTrueName=#{userTrueName},phoneNumber=#{phoneNumber} where user_Id=#{userId}
+	</update>
+    <!--登录-->
+    <select id="userIsLogin" parameterType="com.ysu.demo.bean.User"
+            resultType="com.ysu.demo.bean.User" resultMap="userMapper">
+		select * from user where u_name=#{userName} and password=#{password}
+	</select>
+    <!--查询所有用户-->
+    <select id="queryAllUser" resultMap="userMapper"   resultType="com.ysu.demo.bean.User">
+		select * from user
+	</select>
+    <!--以序号查询用户-->
+    <select id="queryUserById"  resultMap="userMapper" parameterType="Integer">
+		select * from user where u_Id=#{userId}
+	</select>
+   <!-- 用户真实名查询（模糊查询）-->
+    <select id="queryUserByName"  resultMap="userMapper" parameterType="java.lang.String">
+		select * from user where u_true_name like '%${value}%'
+	</select>
+<!--登录判定-->
+    <select id="userIsExist"  resultMap="userMapper" parameterType="com.ysu.demo.bean.User">
+		select * from user where u_name=#{userName}
+	</select>
+	<!--账户信息变更-->
+	<update id="userSafe" parameterType="com.ysu.demo.bean.User">
+	update user set password=#{password},u_true_name=#{userTrueName},u_phone_number=#{phoneNumber}where u_Id=#{userId}
+	</update>
+
+</mapper>

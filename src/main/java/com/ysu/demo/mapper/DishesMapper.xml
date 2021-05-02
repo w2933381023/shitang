@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ysu.demo.mapper.DishesMapper">
+    <resultMap type="com.ysu.demo.bean.Dishes" id="dishesMapper">
+        <id property="dishesId" column="d_id" />
+        <result property="dishesName" column="d_name" />
+        <result property="dishesSellNumber" column="d_sell_number" />
+        <result property="dishesIntroduction" column="d_introduction" />
+        <result property="dishesState" column="d_state"/>
+        <result property="dishesPrice" column="d_price"/>
+		<result property="shopId" column="s_id"/>
+		<result property="shopName" column="s_name"/>
+		<result property="count" column="d_count"/>
+		<result property="goodsId" column="g_id"/>
+		<result property="dishesImage" column="d_image"/>
+</resultMap>
+
+    <!-- 菜品添加 -->
+    <insert id="insertDishes" parameterType="com.ysu.demo.bean.Dishes" useGeneratedKeys="true" keyProperty="dishesId">
+		insert into dishes(d_name,d_introduction,d_price,s_id,s_name,g_id,d_image)
+		values(#{dishesName},#{dishesIntroduction},#{dishesPrice},#{shopId},#{shopName},#{goodsId},#{dishesImage})
+	</insert>
+<!--    菜品删除-->
+    <delete id="deleteDishes" parameterType="Integer">
+	  delete from dishes where d_id=#{value}
+	</delete>
+<!--    更改菜品-->
+    <update id="updateDishes" parameterType="com.ysu.demo.bean.Dishes">
+	update dishes set d_name=#{dishesName},d_price=#{dishesPrice},d_introduction=#{dishesIntroduction},d_state=#{dishesState} where d_Id=#{dishesId}
+	</update>
+<!--    查询所有菜品-->
+    <select id="queryAllDishes" resultMap="dishesMapper"   resultType="com.ysu.demo.bean.Dishes">
+		select * from dishes
+	</select>
+<!--    以序号查询菜品-->
+    <select id="queryDishesById"  resultMap="dishesMapper" parameterType="Integer">
+		select * from dishes where d_id=#{dishesId}
+	</select>
+   <!--  菜品名查询（模糊查询）-->
+    <select id="queryDishesByName"  resultMap="dishesMapper" parameterType="java.lang.String">
+		select * from dishes where d_name like '%${value}%'
+	</select>
+
+    <select id="dishesIsExist"  resultMap="dishesMapper" parameterType="com.ysu.demo.bean.Dishes">
+		select * from dishes where d_name=#{dishesName} and s_id=#{shopId}
+	</select>
+
+	<!--    店铺编号查询对应菜品-->
+	<select id="queryDishesByShopId" resultMap="dishesMapper" parameterType="Integer">
+        select * from dishes where s_id=#{shopId}
+    </select>
+
+	<select id="queryDishesByGoodsId" resultMap="dishesMapper" resultType="com.ysu.demo.bean.Dishes" parameterType="Integer">
+        select * from dishes where g_id=#{goodsId} and d_state=2
+    </select>
+
+	<select id="queryDishesByState" resultMap="dishesMapper" resultType="com.ysu.demo.bean.Dishes" parameterType="Integer">
+        select * from dishes where d_state=#{value}
+    </select>
+
+	<select id="queryDishesByShopName1" resultMap="dishesMapper" resultType="com.ysu.demo.bean.Dishes" parameterType="Integer">
+        select * from dishes where s_name=#{value}
+    </select>
+
+	<select id="queryDishesByShopName2" resultMap="dishesMapper" resultType="com.ysu.demo.bean.Dishes">
+        select * from dishes where s_name like '%${shopName}%' and d_state=#{dishesState}
+    </select>
+
+	<select id="queryDishesBySnAndDn" resultMap="dishesMapper" resultType="com.ysu.demo.bean.Dishes">
+        select * from dishes where s_id=#{shopId} and d_name=#{dishesName}
+    </select>
+</mapper>
